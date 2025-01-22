@@ -4,6 +4,7 @@ import random
 import asyncio
 
 pygame.init()
+pygame.mixer.init()
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -12,14 +13,18 @@ GREEN = (0, 255, 0)
 RED = (155, 28, 49)
 VIOLET = (42, 0, 115)
 
-skiier_sprite = pygame.image.load('Assets/sprites/Skiier.png')
-flag_sprite = pygame.image.load('Assets/sprites/flag.png')
-wall_1 = pygame.image.load('Assets/sprites/side_1.png')
-wall_2 = pygame.image.load('Assets/sprites/side_2.png')
+skiier_sprite = pygame.image.load('assets/sprites/Skiier.png')
+flag_sprite = pygame.image.load('assets/sprites/flag.png')
+wall_1 = pygame.image.load('assets/sprites/side_1.png')
+wall_2 = pygame.image.load('assets/sprites/side_2.png')
 
 font = pygame.font.Font(None, 100)
-fontborg9 = pygame.font.Font('Assets/font/Borg9.ttf', 150)
-fontborg9_2 = pygame.font.Font('Assets/font/Borg9.ttf', 155)
+fontborg9 = pygame.font.Font('assets/font/Borg9.ttf', 150)
+fontborg9_2 = pygame.font.Font('assets/font/Borg9.ttf', 155)
+
+clapping =  pygame.mixer.Sound('assets/musik/clapping.ogg')
+pygame.mixer.Sound.set_volume(clapping, 0.5)
+
 
 WIDTH, HEIGHT = 1000, 1000
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -229,6 +234,11 @@ async def endless(random_seed=1):
 
     countdown_menu = 5*FPS
 
+    pygame.mixer.music.stop()
+    pygame.mixer.music.load('assets/musik/active-sport.ogg')
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.2)
+
     while running:
         screen.fill(SNOW_WHITE)
 
@@ -287,6 +297,9 @@ async def endless(random_seed=1):
         wall2.display()
         game_map.display_move(screen, player.speed_y)
 
+        if countdown_menu == 5*FPS-1:
+            pygame.mixer.Sound.play(clapping)
+
         if game_over == True:
             countdown_menu -= 1
             screen.blit(flag_surface, flag_rect)
@@ -295,8 +308,8 @@ async def endless(random_seed=1):
                 return
 
         clock.tick(FPS)
-        await asyncio.sleep(0)
         pygame.display.update()
+        await asyncio.sleep(0)
 
 async def time_trial(random_seed=1):
     running = True
@@ -314,6 +327,11 @@ async def time_trial(random_seed=1):
 
     finish_return_menu = False
     countdown_menu = 5*FPS
+
+    pygame.mixer.music.stop()
+    pygame.mixer.music.load('assets/musik/real-extreme.ogg')
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.2)
 
     while running:
         screen.fill(SNOW_WHITE)
@@ -339,6 +357,7 @@ async def time_trial(random_seed=1):
 
         if game_map.finish_rect.collidepoint(player_center):
             print("finish")
+            pygame.mixer.Sound.play(clapping)
             start_timer = False
             finish_return_menu = True
             formatted_time = format_time(time / FPS)
@@ -371,6 +390,8 @@ async def time_trial(random_seed=1):
                 game_map.danger_zone_Right.remove(danger_zone)
                 time += 2*FPS 
 
+        if countdown_menu == 5*FPS-1:
+            pygame.mixer.Sound.play(clapping)
         
 #       print(time)
         player.move()
@@ -381,8 +402,8 @@ async def time_trial(random_seed=1):
         game_map.display_move(screen, player.speed_y)
         
         clock.tick(FPS)
-        await asyncio.sleep(0)
         pygame.display.update()
+        await asyncio.sleep(0)
 
 async def map_select():
     running = True
@@ -409,12 +430,24 @@ async def map_select():
                 if Button_rect_map_1.rect_1.collidepoint(mouse_pos):
                     print("Map 1")
                     await time_trial(47)
+                    pygame.mixer.music.stop()
+                    pygame.mixer.music.load('assets/musik/retro-beat.ogg')
+                    pygame.mixer.music.play(-1)
+                    pygame.mixer.music.set_volume(0.2)
                 elif Button_rect_map_2.rect_1.collidepoint(mouse_pos):
                     print("Map 2")
                     await time_trial(31)
+                    pygame.mixer.music.stop()
+                    pygame.mixer.music.load('assets/musik/retro-beat.ogg')
+                    pygame.mixer.music.play(-1)
+                    pygame.mixer.music.set_volume(0.2)
                 elif Button_rect_map_3.rect_1.collidepoint(mouse_pos):
                     print("Map 2")
                     await time_trial(21)
+                    pygame.mixer.music.stop()
+                    pygame.mixer.music.load('assets/musik/retro-beat.ogg')
+                    pygame.mixer.music.play(-1)
+                    pygame.mixer.music.set_volume(0.2)
                 elif Button_rect_back.rect_1.collidepoint(mouse_pos):
                     print("back")
                     return
@@ -428,8 +461,8 @@ async def map_select():
         Button_rect_back.display()
         Alpine_hover_rect.display()
         clock.tick(FPS)
-        await asyncio.sleep(0)
         pygame.display.update()
+        await asyncio.sleep(0)
 
 async def main():
     running = True
@@ -442,6 +475,11 @@ async def main():
     buttons = [Button_rect_maps, Button_rect_Endless, Button_rect_story]
     
     mouse_pos = (0,0)
+    
+    pygame.mixer.music.stop()
+    pygame.mixer.music.load('assets/musik/retro-beat.ogg')
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.2)
 
     while running:
         screen.fill(SNOW_WHITE)
@@ -459,9 +497,17 @@ async def main():
                 elif Button_rect_Endless.rect_1.collidepoint(mouse_pos):
                     print("Endless button clicked")
                     await endless(random.randint(0, 3000))
+                    pygame.mixer.music.stop()
+                    pygame.mixer.music.load('assets/musik/retro-beat.ogg')
+                    pygame.mixer.music.play(-1)
+                    pygame.mixer.music.set_volume(0.2)
                 elif Button_rect_story.rect_1.collidepoint(mouse_pos):
                     print("Arcade button clicked")
                     await time_trial(random.randint(0, 3000))
+                    pygame.mixer.music.stop()
+                    pygame.mixer.music.load('assets/musik/retro-beat.ogg')
+                    pygame.mixer.music.play(-1)
+                    pygame.mixer.music.set_volume(0.2)
 
         for button in buttons:
             button.colour = VIOLET if button.rect_1.collidepoint(mouse_pos) else BLACK
@@ -471,8 +517,7 @@ async def main():
         Button_rect_story.display()
         Alpine_hover_rect.display()
         clock.tick(FPS)
-        await asyncio.sleep(0)
         pygame.display.update()
-
+        await asyncio.sleep(0)
 
 asyncio.run(main())
