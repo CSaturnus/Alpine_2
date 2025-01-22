@@ -19,6 +19,7 @@ wall_1 = pygame.image.load('assets/sprites/side_1.png')
 wall_2 = pygame.image.load('assets/sprites/side_2.png')
 
 font = pygame.font.Font(None, 100)
+fontsmall = pygame.font.Font(None, 20)
 fontborg9 = pygame.font.Font('assets/font/Borg9.ttf', 150)
 fontborg9_2 = pygame.font.Font('assets/font/Borg9.ttf', 155)
 
@@ -473,7 +474,9 @@ async def main():
     Alpine_hover_rect = Title_name(WIDTH//2, 200, 850, 150, "ALPINE2")
 
     buttons = [Button_rect_maps, Button_rect_Endless, Button_rect_story]
-    
+
+    Thanks = pygame.Rect(WIDTH-105, HEIGHT-20, 100, 100)
+
     mouse_pos = (0,0)
     
     pygame.mixer.music.stop()
@@ -516,6 +519,9 @@ async def main():
         Button_rect_Endless.display()
         Button_rect_story.display()
         Alpine_hover_rect.display()
+        text_render = fontsmall.render("Thanks to Phyfl", True, BLACK)
+        screen.blit(text_render, Thanks)
+
         clock.tick(FPS)
         pygame.display.update()
         await asyncio.sleep(0)
