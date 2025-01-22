@@ -1,12 +1,9 @@
 import pygame
 import math
 import random
-import sys
 import asyncio
-import random
 
 pygame.init()
-pygame.mixer.init()
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -21,15 +18,15 @@ wall_1 = pygame.image.load('Assets/sprites/side_1.png')
 wall_2 = pygame.image.load('Assets/sprites/side_2.png')
 
 font = pygame.font.Font(None, 100)
-fontborg9 = pygame.font.Font('Assets/font/Borg9.otf', 150)
-fontborg9_2 = pygame.font.Font('Assets/font/Borg9.otf', 155)
+fontborg9 = pygame.font.Font('Assets/font/Borg9.ttf', 150)
+fontborg9_2 = pygame.font.Font('Assets/font/Borg9.ttf', 155)
 
 WIDTH, HEIGHT = 1000, 1000
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Alpine_2")
 
 clock = pygame.time.Clock() 
-FPS = 60
+FPS = 30
 
 def generate_infinity():
     flag_pos_x = []
@@ -230,10 +227,9 @@ async def endless(random_seed=1):
     Flags = 0
     game_over = False
 
-    countdown_menu = 3*FPS
+    countdown_menu = 5*FPS
 
     while running:
-        clock.tick(FPS)
         screen.fill(SNOW_WHITE)
 
         for event in pygame.event.get():
@@ -299,6 +295,7 @@ async def endless(random_seed=1):
                 return
 
         clock.tick(FPS)
+        await asyncio.sleep(0)
         pygame.display.update()
 
 async def time_trial(random_seed=1):
@@ -316,10 +313,9 @@ async def time_trial(random_seed=1):
     start_timer = False
 
     finish_return_menu = False
-    countdown_menu = 3*FPS
+    countdown_menu = 5*FPS
 
     while running:
-        clock.tick(FPS)
         screen.fill(SNOW_WHITE)
 
         for event in pygame.event.get():
@@ -385,6 +381,7 @@ async def time_trial(random_seed=1):
         game_map.display_move(screen, player.speed_y)
         
         clock.tick(FPS)
+        await asyncio.sleep(0)
         pygame.display.update()
 
 async def map_select():
@@ -400,7 +397,6 @@ async def map_select():
     mouse_pos = (0,0)
 
     while running:
-        clock.tick(FPS)
         screen.fill(SNOW_WHITE)
         mouse_pos = pygame.mouse.get_pos()
 
@@ -412,13 +408,13 @@ async def map_select():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if Button_rect_map_1.rect_1.collidepoint(mouse_pos):
                     print("Map 1")
-                    time_trial(47)
+                    await time_trial(47)
                 elif Button_rect_map_2.rect_1.collidepoint(mouse_pos):
                     print("Map 2")
-                    time_trial(31)
+                    await time_trial(31)
                 elif Button_rect_map_3.rect_1.collidepoint(mouse_pos):
                     print("Map 2")
-                    time_trial(21)
+                    await time_trial(21)
                 elif Button_rect_back.rect_1.collidepoint(mouse_pos):
                     print("back")
                     return
@@ -432,6 +428,7 @@ async def map_select():
         Button_rect_back.display()
         Alpine_hover_rect.display()
         clock.tick(FPS)
+        await asyncio.sleep(0)
         pygame.display.update()
 
 async def main():
@@ -447,7 +444,6 @@ async def main():
     mouse_pos = (0,0)
 
     while running:
-        clock.tick(FPS)
         screen.fill(SNOW_WHITE)
         mouse_pos = pygame.mouse.get_pos()
 
@@ -475,6 +471,7 @@ async def main():
         Button_rect_story.display()
         Alpine_hover_rect.display()
         clock.tick(FPS)
+        await asyncio.sleep(0)
         pygame.display.update()
 
 
