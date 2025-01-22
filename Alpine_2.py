@@ -216,7 +216,7 @@ class Title_name:
         screen.blit(self.text_render_2, self.text_rect)
         screen.blit(self.text_render, self.text_rect)
 
-def endless(random_seed=1):
+async def endless(random_seed=1):
     running = True
     player = skiier(0, 0, 13, 0)
 
@@ -301,7 +301,7 @@ def endless(random_seed=1):
         clock.tick(FPS)
         pygame.display.update()
 
-def time_trial(random_seed=1):
+async def time_trial(random_seed=1):
     running = True
     player = skiier(0, 0, 13, 0)
 
@@ -387,7 +387,7 @@ def time_trial(random_seed=1):
         clock.tick(FPS)
         pygame.display.update()
 
-def map_select():
+async def map_select():
     running = True
     Button_rect_map_1 = Button(WIDTH//2, 400, 500, 100, "Map 1")
     Button_rect_map_2 = Button(WIDTH//2, 550, 500, 100, "Map 2")
@@ -434,7 +434,7 @@ def map_select():
         clock.tick(FPS)
         pygame.display.update()
 
-def main():
+async def main():
     running = True
 
     Button_rect_maps = Button(WIDTH//2, 400, 500, 100, "Maps")
@@ -459,13 +459,13 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if Button_rect_maps.rect_1.collidepoint(mouse_pos):
                     print("Maps button clicked")
-                    map_select()
+                    await map_select()
                 elif Button_rect_Endless.rect_1.collidepoint(mouse_pos):
                     print("Endless button clicked")
-                    endless(random.randint(0, 3000))
+                    await endless(random.randint(0, 3000))
                 elif Button_rect_story.rect_1.collidepoint(mouse_pos):
                     print("Arcade button clicked")
-                    time_trial(random.randint(0, 3000))
+                    await time_trial(random.randint(0, 3000))
 
         for button in buttons:
             button.colour = VIOLET if button.rect_1.collidepoint(mouse_pos) else BLACK
@@ -477,5 +477,5 @@ def main():
         clock.tick(FPS)
         pygame.display.update()
 
-if __name__ == "__main__":
-	main()
+
+asyncio.run(main())
