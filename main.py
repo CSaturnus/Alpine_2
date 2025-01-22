@@ -235,6 +235,8 @@ async def endless(random_seed=1):
 
     countdown_menu = 5*FPS
 
+    debounce = 5
+
     pygame.mixer.music.stop()
     pygame.mixer.music.load('assets/musik/active-sport.ogg')
     pygame.mixer.music.play(-1)
@@ -262,9 +264,13 @@ async def endless(random_seed=1):
             print("RESET!!!!")
             game_map = Map(random.randint(0, 3000), infinity_mode=True)
 
-        if player.rect.colliderect(wall1.rect) or player.rect.colliderect(wall2.rect):
+        if player.rect.colliderect(wall1.rect) or player.rect.colliderect(wall2.rect) and debounce == 5:
             player.angle *= -1
             player.direction *= -1
+            debounce = 0
+        
+        if debounce < 5:
+            debounce += 1
 
         for safe in game_map.safe_zone:
             if safe.collidepoint(player_center):
@@ -320,7 +326,7 @@ async def time_trial(random_seed=1):
     wall2 = Walls(WIDTH-150, 0, 150, HEIGHT, wall_2)
 
     game_map = Map(random_seed)
-    
+
     print(random_seed)
 
     time = 0 
@@ -328,6 +334,8 @@ async def time_trial(random_seed=1):
 
     finish_return_menu = False
     countdown_menu = 5*FPS
+
+    debounce = 5
 
     pygame.mixer.music.stop()
     pygame.mixer.music.load('assets/musik/real-extreme.ogg')
@@ -375,9 +383,13 @@ async def time_trial(random_seed=1):
         if start_timer == True:
             time += 1
 
-        if player.rect.colliderect(wall1.rect) or player.rect.colliderect(wall2.rect):
+        if player.rect.colliderect(wall1.rect) or player.rect.colliderect(wall2.rect) and debounce == 5:
             player.angle *= -1
             player.direction *= -1
+            debounce = 0
+        
+        if debounce < 5:
+            debounce += 1
 
         for danger_zone in game_map.danger_zone_Left:
             if danger_zone.collidepoint(player_center):
