@@ -14,6 +14,7 @@ RED = (155, 28, 49)
 VIOLET = (42, 0, 115)
 
 skiier_sprite = pygame.image.load('assets/sprites/Skiier.png')
+Boel_sprite = pygame.image.load('assets/sprites/Boel.png')
 flag_sprite = pygame.image.load('assets/sprites/flag.png')
 wall_1 = pygame.image.load('assets/sprites/side_1.png')
 wall_2 = pygame.image.load('assets/sprites/side_2.png')
@@ -144,8 +145,11 @@ class Walls:
         screen.blit(self.wall_image, self.rect)
 
 class skiier:
-    def __init__(self, posx, posy, speed, angle):
+    def __init__(self, posx, posy, speed, angle, boelflag):
+        
         self.image = skiier_sprite
+        if boelflag == True:
+            self.image = pygame.transform.scale(Boel_sprite, self.image.size)
         self.posx = posx
         self.posy = posy
         self.rect = self.image.get_rect()
@@ -177,14 +181,18 @@ class skiier:
         screen.blit(self.rotated_image, self.rotated_rect.topleft)
 
 class Button:
-    def __init__(self, posx, posy, width, height, text):
+    def __init__(self, posx, posy, width, height, text, smallfont = False):
         self.posx = posx
         self.posy = posy
         self.width = width
         self.height = height
         self.text = text
         self.colour = BLACK
-        self.text_render = font.render(self.text, True, self.colour)
+        self.smallfont = smallfont
+        if self.smallfont:
+            self.text_render = fontsmall.render(self.text, True, self.colour)
+        else:
+            self.text_render = font.render(self.text, True, self.colour)
         self.rect_1 = pygame.Rect(self.posx, self.posy, self.width, self.height)
         self.rect_1.centerx = self.posx
         self.rect_2 = pygame.Rect(self.posx+5, self.posy+5, self.width-10, self.height-10)
@@ -192,7 +200,10 @@ class Button:
         self.text_rect = self.text_render.get_rect(center=self.rect_2.center)
 
     def display(self):
-        self.text_render = font.render(self.text, True, self.colour)
+        if self.smallfont:
+            self.text_render = fontsmall.render(self.text, True, self.colour)
+        else:
+            self.text_render = font.render(self.text, True, self.colour)
         pygame.draw.rect(screen, BLACK, self.rect_1)
         pygame.draw.rect(screen, WHITE, self.rect_2)
         screen.blit(self.text_render, self.text_rect)
@@ -219,9 +230,9 @@ class Title_name:
         screen.blit(self.text_render_2, self.text_rect)
         screen.blit(self.text_render, self.text_rect)
 
-async def endless(random_seed=1):
+async def endless(random_seed=1, boelflag = False):
     running = True
-    player = skiier(0, 0, 13, 0)
+    player = skiier(0, 0, 13, 0, boelflag)
 
     wall1 = Walls(0, 0, 150, HEIGHT, wall_1)
     wall2 = Walls(WIDTH-150, 0, 150, HEIGHT, wall_2)
@@ -317,9 +328,9 @@ async def endless(random_seed=1):
         pygame.display.update()
         await asyncio.sleep(0)
 
-async def time_trial(random_seed=1):
+async def time_trial(random_seed=1, boelflag = False):
     running = True
-    player = skiier(0, 0, 13, 0)
+    player = skiier(0, 0, 13, 0, boelflag)
 
     wall1 = Walls(0, 0, 150, HEIGHT, wall_1)
     wall2 = Walls(WIDTH-150, 0, 150, HEIGHT, wall_2)
@@ -416,7 +427,7 @@ async def time_trial(random_seed=1):
         pygame.display.update()
         await asyncio.sleep(0)
 
-async def map_select():
+async def map_select(boel_flag):
     running = True
     Button_rect_map_1 = Button(WIDTH//2, 400, 500, 100, "Map 1")
     Button_rect_map_2 = Button(WIDTH//2, 550, 500, 100, "Map 2")
@@ -440,21 +451,21 @@ async def map_select():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if Button_rect_map_1.rect_1.collidepoint(mouse_pos):
                     print("Map 1")
-                    await time_trial(47)
+                    await time_trial(47, boel_flag)
                     pygame.mixer.music.stop()
                     pygame.mixer.music.load('assets/musik/retro-beat.ogg')
                     pygame.mixer.music.play(-1)
                     pygame.mixer.music.set_volume(0.2)
                 elif Button_rect_map_2.rect_1.collidepoint(mouse_pos):
                     print("Map 2")
-                    await time_trial(31)
+                    await time_trial(31, boel_flag)
                     pygame.mixer.music.stop()
                     pygame.mixer.music.load('assets/musik/retro-beat.ogg')
                     pygame.mixer.music.play(-1)
                     pygame.mixer.music.set_volume(0.2)
                 elif Button_rect_map_3.rect_1.collidepoint(mouse_pos):
                     print("Map 2")
-                    await time_trial(21)
+                    await time_trial(21, boel_flag)
                     pygame.mixer.music.stop()
                     pygame.mixer.music.load('assets/musik/retro-beat.ogg')
                     pygame.mixer.music.play(-1)
@@ -471,6 +482,7 @@ async def map_select():
         Button_rect_map_3.display()
         Button_rect_back.display()
         Alpine_hover_rect.display()
+        
         clock.tick(FPS)
         pygame.display.update()
         await asyncio.sleep(0)
@@ -482,8 +494,9 @@ async def main():
     Button_rect_Endless = Button(WIDTH//2, 550, 500, 100, "Endless")
     Button_rect_story = Button(WIDTH//2, 700, 500, 100, "Random Map")
     Alpine_hover_rect = Title_name(WIDTH//2, 200, 850, 150, "ALPINE2")
+    boel_rect = Button(WIDTH - 60, HEIGHT - 80, 100, 50, "BOEL MODE", True)
 
-    buttons = [Button_rect_maps, Button_rect_Endless, Button_rect_story]
+    buttons = [Button_rect_maps, Button_rect_Endless, Button_rect_story, boel_rect]
 
     Thanks = pygame.Rect(WIDTH-105, HEIGHT-20, 100, 100)
 
@@ -493,6 +506,8 @@ async def main():
     pygame.mixer.music.load('assets/musik/retro-beat.ogg')
     pygame.mixer.music.play(-1)
     pygame.mixer.music.set_volume(0.2)
+
+    boel_flag = False
 
     while running:
         screen.fill(SNOW_WHITE)
@@ -506,21 +521,23 @@ async def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if Button_rect_maps.rect_1.collidepoint(mouse_pos):
                     print("Maps button clicked")
-                    await map_select()
+                    await map_select(boel_flag)
                 elif Button_rect_Endless.rect_1.collidepoint(mouse_pos):
                     print("Endless button clicked")
-                    await endless(random.randint(0, 3000))
+                    await endless(random.randint(0, 3000), boel_flag)
                     pygame.mixer.music.stop()
                     pygame.mixer.music.load('assets/musik/retro-beat.ogg')
                     pygame.mixer.music.play(-1)
                     pygame.mixer.music.set_volume(0.2)
                 elif Button_rect_story.rect_1.collidepoint(mouse_pos):
                     print("Arcade button clicked")
-                    await time_trial(random.randint(0, 3000))
+                    await time_trial(random.randint(0, 3000), boel_flag)
                     pygame.mixer.music.stop()
                     pygame.mixer.music.load('assets/musik/retro-beat.ogg')
                     pygame.mixer.music.play(-1)
                     pygame.mixer.music.set_volume(0.2)
+                elif boel_rect.rect_1.collidepoint(mouse_pos):
+                    boel_flag = True
 
         for button in buttons:
             button.colour = VIOLET if button.rect_1.collidepoint(mouse_pos) else BLACK
@@ -529,6 +546,7 @@ async def main():
         Button_rect_Endless.display()
         Button_rect_story.display()
         Alpine_hover_rect.display()
+        boel_rect.display()
         text_render = fontsmall.render("Thanks to Phyfl", True, BLACK)
         screen.blit(text_render, Thanks)
 
